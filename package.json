@@ -1,0 +1,44 @@
+{
+  "name": "radio",
+  "productName": "IBM Community Radio",
+  "author": "Chris Dhanaraj",
+  "description": "IBM CR mini-player",
+  "version": "0.1.0",
+  "dependencies": {
+    "carbon-components": "^7.22.1",
+    "carbon-components-react": "^3.11.0",
+    "firebase": "^4.3.1",
+    "glamor": "^2.20.40",
+    "glamorous": "^4.4.0",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.11"
+  },
+  "scripts": {
+    "start": "nf start -p 3000",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-start": "node src/electron-wait-react",
+    "react-start": "react-scripts start",
+    "pack": "build --dir",
+    "dist": "npm run build && build",
+    "postinstall": "install-app-deps"
+  },
+  "devDependencies": {
+    "electron": "^1.7.5",
+    "electron-builder": "^19.24.1",
+    "electron-icon-maker": "^0.0.3",
+    "icon-gen": "1.0.7"
+  },
+  "main": "src/electron-starter.js",
+  "build": {
+    "appId": "com.IBM.Radio",
+    "directories": {
+      "buildResources": "public"
+    }
+  },
+  "homepage": "./"
+}
