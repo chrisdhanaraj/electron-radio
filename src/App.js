@@ -8,8 +8,6 @@ import radioIcon from './assets/images/ibmcr.svg';
 import './radio.css';
 const { Div } = glamorous;
 
-const config = process.env.FIREBASE_CONFIG;
-
 const AppBackground = glamorous.div({
   display: 'flex',
   flexDirection: 'column',
@@ -65,8 +63,11 @@ class App extends PureComponent {
   };
 
   componentDidMount() {
-    console.log('env: ', process.env);
-    const config = process.env.REACT_APP_FIREBASE_CONFIG;
+    if (!process.env.REACT_APP_FIREBASE) {
+      console.log('Please enter your firebase details');
+    }
+
+    const config = JSON.parse(process.env.REACT_APP_FIREBASE);
     firebase.initializeApp(config);
     const database = firebase.database();
 
