@@ -1,6 +1,7 @@
 import { SET_AUDIO_STATE, SET_TRACKLIST_STATE } from '../actions';
 
-export const audioReducer = (state = 'paused', action) => {
+// default not muted
+export const audioReducer = (state = true, action) => {
   switch (action.type) {
     case SET_AUDIO_STATE:
       return action.audioState;
@@ -9,7 +10,8 @@ export const audioReducer = (state = 'paused', action) => {
   }
 };
 
-export const tracklistReducer = (state = 'closed', action) => {
+// default tracklist closed
+export const tracklistReducer = (state = false, action) => {
   switch (action.type) {
     case SET_TRACKLIST_STATE:
       return action.tracklistState;

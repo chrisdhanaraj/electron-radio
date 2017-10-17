@@ -27,6 +27,7 @@ const TableContainer = glamorous.div(
     width: '100%',
     transition: 'all 700ms cubic-bezier(0.5, 0, 0.1, 1)',
     transform: 'translateY(0)',
+    zIndex: 10,
   },
   ({ open }) => {
     return {
@@ -36,10 +37,6 @@ const TableContainer = glamorous.div(
 );
 
 export default class Playlist extends Component {
-  state = {
-    open: false,
-  };
-
   handlePlaylist = evt => {
     this.props.togglePlaylist(false);
   };

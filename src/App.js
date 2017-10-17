@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
 import glamorous from 'glamorous';
 import * as firebase from 'firebase';
+import { setAudioState, setTracklistState, updateRadioState } from './actions';
 import AudioBar from './components/AudioBar';
 import Playlist from './components/Playlist';
 import Gif from './components/Gif';
-import radioIcon from './assets/images/ibmcr.svg';
 import './radio.css';
 const { Div } = glamorous;
 
@@ -29,39 +30,6 @@ const AppBackground = glamorous.div({
 });
 
 class App extends PureComponent {
-  state = {
-    description: '',
-    djName: '',
-    endTime: '',
-    profilePic: radioIcon,
-    showName: '',
-    songlist: [],
-    startTime: '',
-    live: false,
-    mute: false,
-    playlistOpen: false,
-  };
-
-  togglePlaylist = flag => {
-    const toggle = flag !== undefined ? flag : !this.state.playlistOpen;
-
-    this.setState({
-      playlistOpen: toggle,
-    });
-  };
-
-  toggleMute = flag => {
-    const toggle = flag !== undefined ? flag : !this.state.mute;
-
-    if (this.audio) {
-      this.audio.muted = toggle;
-    }
-
-    this.setState({
-      mute: toggle,
-    });
-  };
-
   componentDidMount() {
     if (!process.env.REACT_APP_FIREBASE) {
       console.log('Please enter your firebase details');
@@ -71,28 +39,21 @@ class App extends PureComponent {
     firebase.initializeApp(config);
     const database = firebase.database();
 
+    // props
+    const { updateRadioState } = this.props;
+
     // firebase refs
     const firebaseRef = database.ref('/');
-    const loggedInRef = database.ref('/isLoggedIn');
-    const sessionRef = database.ref('/session');
 
     firebaseRef.on('value', snapshot => {
-      console.log(snapshot.val());
-    });
+      const { isLoggedIn, session } = snapshot.val();
 
-    // firebase listeners
-    loggedInRef.on('value', snapshot => {
-      const loggedIn = snapshot.val();
-      const stateObj = Object.assign(
-        {
-          live: loggedIn,
-        },
-        !loggedIn && {
-          profilePic: radioIcon,
-        }
-      );
+      const radioState = {
+        isLoggedIn,
+        ...session,
+      };
 
-      this.setState(stateObj);
+      updateRadioState(radioState);
     });
 
     if (this.audio) {
@@ -103,61 +64,53 @@ class App extends PureComponent {
 
     document.addEventListener('keydown', evt => {
       if (evt.which === 27) {
-        this.togglePlaylist(false);
+        this.props.togglePlaylist(false);
       }
-    });
-
-    sessionRef.on('value', snapshot => {
-      const session = snapshot.val();
-      let playlist = [];
-      const { songlist, profilePic, ...other } = session;
-
-      if (songlist) {
-        playlist = Object.keys(songlist)
-          .map(key => songlist[key])
-          .reverse();
-      }
-
-      this.setState({
-        profilePic: !this.state.live ? radioIcon : profilePic,
-        songlist: playlist,
-        ...other,
-      });
     });
   }
 
-  render() {
-    const { live, songlist, playlistOpen, profilePic, mute } = this.state;
+  setAudioState = audioState => {
+    if (audioState) {
+      this.audio.muted = false;
+    } else {
+      this.audio.muted = true;
+    }
+  };
 
-    const currentTrack = songlist[0];
+  render() {
+    const {
+      audioState,
+      show,
+      tracklist,
+      togglePlaylist,
+      toggleAudio,
+    } = this.props;
+    const { profilePic, songlist } = show;
+
+    if (this.audio) {
+      this.setAudioState(audioState);
+    }
 
     return (
       <AppBackground onKeyDown={this.handleKeydown}>
-        <Gif profilePic={profilePic} live={live} />
-
-        {currentTrack !== undefined && (
-          <Div textAlign="center" marginBottm="1rem">
-            <strong>{currentTrack.songName}</strong>
-            <p>{currentTrack.artistName}</p>
-          </Div>
-        )}
-
-        {live && (
-          <AudioBar
-            mute={mute}
-            toggleMute={this.toggleMute}
-            togglePlaylist={this.togglePlaylist}
-          />
-        )}
-
-        {live && (
-          <Playlist
-            open={playlistOpen}
-            songlist={songlist}
-            togglePlaylist={this.togglePlaylist}
-          />
-        )}
-
+        <Gif profilePic={profilePic} />
+        <Div textAlign="center" marginBottm="1rem">
+          <strong>
+            {songlist.length > 0 ? songlist[0].songName : 'Offline'}
+          </strong>
+          {songlist.length > 0 && <p>{songlist[0].artistName}</p>}
+        </Div>
+        <Playlist
+          open={tracklist}
+          songlist={songlist}
+          togglePlaylist={togglePlaylist}
+        />
+        <AudioBar
+          mute={audioState}
+          tracklist={tracklist}
+          toggleMute={toggleAudio}
+          togglePlaylist={togglePlaylist}
+        />
         <audio
           ref={el => (this.audio = el)}
           id="radio-element"
@@ -170,4 +123,25 @@ class App extends PureComponent {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  const { audio, tracklist, show } = state;
+
+  return {
+    audioState: audio,
+    tracklist,
+    show,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleAudio: audioState => dispatch(setAudioState(audioState)),
+    togglePlaylist: tracklistState =>
+      dispatch(setTracklistState(tracklistState)),
+    updateRadioState: radioState => dispatch(updateRadioState(radioState)),
+  };
+};
+
+const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default AppContainer;

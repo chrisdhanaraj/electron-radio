@@ -44,5 +44,8 @@
       "buildResources": "public"
     }
   },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
   "homepage": "./"
 }

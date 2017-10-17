@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import glamorous from 'glamorous';
 import playIcon from '../assets/images/ic_play_circle_outline_white_24px.svg';
-import muteIcon from '../assets/images/ic_volume_mute_white_24px.svg';
+import pauseIcon from '../assets/images/ic_pause_circle_outline_white_24px.svg';
 import playlistIcon from '../assets/images/ic_playlist_play_white_24px.svg';
 
 import { ButtonReset } from './ButtonReset';
@@ -21,11 +21,11 @@ const AudioIcon = glamorous.img({
 
 export default class AudioBar extends Component {
   handleMute = () => {
-    this.props.toggleMute();
+    this.props.toggleMute(!this.props.mute);
   };
 
   handlePlaylist = () => {
-    this.props.togglePlaylist();
+    this.props.togglePlaylist(!this.props.tracklist);
   };
 
   render() {
@@ -34,7 +34,7 @@ export default class AudioBar extends Component {
     return (
       <Bar>
         <ButtonReset onClick={this.handleMute}>
-          <AudioIcon alt="toggle mute" src={mute ? muteIcon : playIcon} />
+          <AudioIcon alt="toggle mute" src={mute ? playIcon : pauseIcon} />
         </ButtonReset>
 
         <ButtonReset
