@@ -72,8 +72,13 @@ class App extends PureComponent {
     const database = firebase.database();
 
     // firebase refs
+    const firebaseRef = database.ref('/');
     const loggedInRef = database.ref('/isLoggedIn');
     const sessionRef = database.ref('/session');
+
+    firebaseRef.on('value', snapshot => {
+      console.log(snapshot.val());
+    });
 
     // firebase listeners
     loggedInRef.on('value', snapshot => {
