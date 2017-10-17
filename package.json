@@ -3,7 +3,7 @@
   "productName": "IBM Community Radio",
   "author": "Chris Dhanaraj",
   "description": "IBM CR mini-player",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "dependencies": {
     "carbon-components": "^7.22.1",
     "carbon-components-react": "^3.11.0",
