@@ -114,7 +114,7 @@ class App extends PureComponent {
         <audio
           ref={el => (this.audio = el)}
           id="radio-element"
-          src="https://9.20.64.218:8001/bluecast_128k.mp3"
+          src="https://stream1-ral.radio.intranet.ibm.com:8001/bluecast_128k.mp3"
         >
           Your browser does not support the audio element.
         </audio>

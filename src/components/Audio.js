@@ -36,7 +36,7 @@ export class Audio extends Component {
             id="radio-element"
             preload="audio"
           >
-            <source src="http://bluecast-master.rtp.raleigh.ibm.com:8000/bluecast_128.mp3" type="audio/mpeg">
+            <source src="https://stream1-ral.radio.intranet.ibm.com:8001/bluecast_128k.mp3" type="audio/mpeg">
           </audio>
         </div>
       </AudioContainer>
